@@ -5,9 +5,9 @@
 # This library is still WIP
 
 # Planned feature progress
-- Keypair generation [X]
-- PEM string output [X]
-- DER output []
-- PEM string input []
-- PEM file export []
-- PEM file load []
+- [x] Keypair generation
+- [x] PEM string output
+- [x] DER output
+- [ ] PEM string input
+- [ ] PEM file export
+- [ ] PEM file load
