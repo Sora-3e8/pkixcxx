@@ -92,6 +92,18 @@ namespace pkixcxx
     i2d_PublicKey(pki,&pkey);
     return key_der;
   }
+
+  std::vector<unsigned char> pkix::getPrivDER()
+  {
+    if(pki == nullptr) return std::vector<unsigned char>();
+
+    int key_len = i2d_PrivateKey(pki, NULL);
+    std::vector<unsigned char> key_der(key_len);
+    unsigned char* pkey = key_der.data();
+    i2d_PrivateKey(pki,&pkey);
+    return key_der;
+  }
+
   
   pkix::~pkix()
   {

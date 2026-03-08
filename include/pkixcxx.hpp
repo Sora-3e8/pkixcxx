@@ -22,6 +22,7 @@ namespace pkixcxx
       std::string getPrivPEM();
       std::string getBundlePEM();
       std::vector<unsigned char> getPubDER();
+      std::vector<unsigned char> getPrivDER();
       void exportPEM();
       char* encrypt();
       char* decrypt();
