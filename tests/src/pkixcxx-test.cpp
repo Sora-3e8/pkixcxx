@@ -59,6 +59,15 @@ int pubPEM_test()
   return 0;
 }
 
+int privDER_test()
+{
+  pkixcxx::pkix key_factory;
+  key_factory.generate_keypair(2048);
+  std::vector<unsigned char> priv_der= key_factory.getPrivDER();
+  std::cout << pkixcxx::DERhexStr(priv_der) << std::endl;
+  return 0;
+}
+
 int pubDER_test()
 {
   pkixcxx::pkix key_factory;
@@ -88,6 +97,7 @@ std::map<std::string,std::function<int()>> handler =
   {"--privPEM", &privPEM_test},
   {"--pubPEM", &pubPEM_test},
   {"--bundlePEM", &bundlePEM_test},
+  {"--privDER", &privDER_test},
   {"--pubDER", &pubDER_test},
 };
 
