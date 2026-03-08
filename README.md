@@ -8,6 +8,9 @@
 - [x] Keypair generation
 - [x] PEM string output
 - [x] DER output
-- [ ] PEM string input
-- [ ] PEM file export
-- [ ] PEM file load
+- [x] PEM string input
+- [x] PEM file export
+- [x] PEM file load
+- [ ] RSA Encrypt
+- [ ] RSA Decrypt
+- [ ] RSA Sign 
