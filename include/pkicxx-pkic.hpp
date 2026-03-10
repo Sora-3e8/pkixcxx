@@ -38,9 +38,6 @@ namespace pkicxx
       void exportPrivPEM(std::string &file);
       void exportPubPEM(std::string &file);
       void exportBundlePEM(std::string &file);
-
-
-    private:
       ::evp_pkey_st *key_container = nullptr;
   };
 }

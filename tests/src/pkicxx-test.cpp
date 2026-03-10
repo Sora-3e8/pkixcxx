@@ -2,6 +2,7 @@
 #include <map>
 #include <functional>
 #include <iostream>
+#include <vector>
 #include "pkicxx-pkic.hpp"
 #include "pkicxx.hpp"
 
@@ -75,6 +76,27 @@ int pubDER_test()
   key_factory.generate_keypair(2048);
   std::vector<unsigned char> pub_der= key_factory.getPubDER();
   std::cout << pkicxx::DERhexStr(pub_der) << std::endl;
+  
+  return 0;
+}
+
+int Encrypt_test()
+{
+  pkicxx::pkic key_factory;
+  key_factory.generate_keypair(2048);
+  pkicxx::pki toolchain;
+  std::string my_message = "Hewwo I am secret ^.^";
+  std::vector<unsigned char> payload(my_message.size());
+  std::copy(my_message.data(),my_message.data()+my_message.size(),payload.data());
+  std::vector<unsigned char> res = toolchain.encrypt(key_factory,payload);
+  std::cout << "Original:" << std::endl;
+  std::cout << my_message << std::endl;
+  std::cout << "Hex::" << std::endl;
+  std::cout << pkicxx::DERhexStr(payload) << std::endl;
+  std::cout << "Encrypted:" << std::endl;
+  std::cout << pkicxx::DERhexStr(res) << std::endl;
+  if (pkicxx::DERhexStr(payload)==pkicxx::DERhexStr(res)||res.size()==0) return 1;
+  
   return 0;
 }
 
@@ -86,8 +108,6 @@ int bundlePEM_test()
   std::cout << bundle << std::endl;
   return 0;
 }
-  
-  
 
 std::map<std::string,std::function<int()>> handler =
 {
@@ -100,6 +120,8 @@ std::map<std::string,std::function<int()>> handler =
   {"--bundlePEM", &bundlePEM_test},
   {"--privDER", &privDER_test},
   {"--pubDER", &pubDER_test},
+  {"--encrypt", &Encrypt_test},
+  
 };
 
 void printUsage(std::string bin_name)

@@ -2,6 +2,7 @@
 #define PKICXX_HPP
 
 #include "pkicxx-pkic.hpp"
+#include "pkicxx-pki.hpp"
 
 namespace pkicxx
 {
