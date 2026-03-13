@@ -53,11 +53,10 @@ namespace pkicxx
     return key_der;
   }
 
-  void pkic::importPEM(std::string &file)
+  void pkic::importPEM(const char* file)
   {
     std::stringstream pem_str2;
     std::fstream pem_file(file,std::ios_base::in); 
-    //pem_file.open(file,std::ios_base::in);
     pem_str2 << pem_file.rdbuf();
     pem_file.close();
     BIO* bio = BIO_new(BIO_s_mem());
@@ -65,8 +64,9 @@ namespace pkicxx
     PEM_read_bio_PUBKEY(bio,&key_container,NULL,&pem_str2);
     BIO_free(bio);
   }
-  
-  void pkic::loadPEMStr(std::string &PEM)
+
+  // Cannot be const std::string PEM
+  void pkic::loadPEMStr(const char* PEM)
   {
     BIO* bio = BIO_new(BIO_s_mem());
     PEM_read_bio_PrivateKey(bio,&key_container,NULL,&PEM);
@@ -119,24 +119,23 @@ namespace pkicxx
   {
     return getPubPEM() + getPrivPEM();
   }
-
       
-  void pkic::exportPrivPEM(std::string &file)
+  void pkic::exportPrivPEM(const char* file)
   {
     std::fstream pem_out(file,std::ios_base::out);
     pem_out << getPrivPEM();
     pem_out.close();
   }
 
-  void pkic::exportPubPEM(std::string &file)
+  
+  void pkic::exportPubPEM(const char* file)
   {
     std::fstream pem_out(file,std::ios_base::out);
     pem_out << getPubPEM();
     pem_out.close();
-  
   }
 
-  void pkic::exportBundlePEM(std::string &file)
+  void pkic::exportBundlePEM(const char* file)
   {
     std::fstream pem_out(file,std::ios_base::out);
     pem_out << getBundlePEM();

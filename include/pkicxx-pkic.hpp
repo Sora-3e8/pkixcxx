@@ -26,8 +26,8 @@ namespace pkicxx
       std::vector<unsigned char> getPubDER();
       
       // PEM loaders
-      void importPEM(std::string &file);
-      void loadPEMStr(std::string &PEM);
+      void importPEM(const char* file);
+      void loadPEMStr(const char* PEM);
 
       // PEM string getters
       std::string getPubPEM();
@@ -35,9 +35,9 @@ namespace pkicxx
       std::string getBundlePEM();
 
       // PEM exporters
-      void exportPrivPEM(std::string &file);
-      void exportPubPEM(std::string &file);
-      void exportBundlePEM(std::string &file);
+      void exportPrivPEM(const char* file);
+      void exportPubPEM(const char* file);
+      void exportBundlePEM(const char* file);
       ::evp_pkey_st *key_container = nullptr;
   };
 }

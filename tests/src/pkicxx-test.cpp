@@ -6,14 +6,14 @@
 #include "pkicxx-pkic.hpp"
 #include "pkicxx.hpp"
 
-int keyfactoryInit_test(char* argv[], int argc)
+int pkicInit(char* argv[], int argc)
 {
   pkicxx::pkic key_factory;
   
   return 0;
 }
 
-int keypairGen_test(char* argv[], int argc)
+int keypairGen(char* argv[], int argc)
 {
   pkicxx::pkic key_factory;
   key_factory.generate_keypair(2048);
@@ -21,7 +21,7 @@ int keypairGen_test(char* argv[], int argc)
   return 0;
 }
 
-int keypairRegen_test(char* argv[], int argc)
+int keypairRegen(char* argv[], int argc)
 {
   pkicxx::pkic key_factory;
   key_factory.generate_keypair(2048);
@@ -31,7 +31,7 @@ int keypairRegen_test(char* argv[], int argc)
   
 }
 
-int keypairMultigen_test(char* argv[], int argc)
+int keypairMultigen(char* argv[], int argc)
 {
   pkicxx::pkic key_factory;
   
@@ -43,25 +43,7 @@ int keypairMultigen_test(char* argv[], int argc)
   return 0;
 }
 
-int privPEM_test(char* argv[], int argc)
-{
-  pkicxx::pkic key_factory;
-  key_factory.generate_keypair(2048);
-  std::string priv = key_factory.getPrivPEM();
-  std::cout << priv << std::endl;
-  return 0;
-}
-
-int pubPEM_test(char* argv[], int argc)
-{
-  pkicxx::pkic key_factory;
-  key_factory.generate_keypair(2048);
-  std::string pub = key_factory.getPubPEM();
-  std::cout << pub << std::endl;
-  return 0;
-}
-
-int privDER_test(char* argv[], int argc)
+int getPrivDER(char* argv[], int argc)
 {
   pkicxx::pkic key_factory;
   key_factory.generate_keypair(2048);
@@ -70,12 +52,122 @@ int privDER_test(char* argv[], int argc)
   return 0;
 }
 
-int pubDER_test(char* argv[], int argc)
+int getPubDER(char* argv[], int argc)
 {
   pkicxx::pkic key_factory;
   key_factory.generate_keypair(2048);
   std::vector<unsigned char> pub_der= key_factory.getPubDER();
   std::cout << pkicxx::hexStr(pub_der) << std::endl;
+  
+  return 0;
+}
+
+int importPrivPEM(char* argv[], int argc)
+{
+  pkicxx::pkic keyc;
+  std::cout << "Priv pem: " << argv[2] << std::endl;
+  std::string empty = pkicxx::hexStr(keyc.getPrivDER());
+  keyc.importPEM(argv[2]);
+  std::string content = pkicxx::hexStr(keyc.getPrivDER());
+  std::cout << "Priv hex:" << std::endl;
+  std::cout << content << std::endl;
+  if(empty == content) return 1;
+  return 0;
+}
+
+int importPubPEM(char* argv[], int argc)
+{
+  pkicxx::pkic keyc;
+  std::string empty = pkicxx::hexStr(keyc.getPubDER());
+  keyc.importPEM(argv[2]);
+  std::string content = pkicxx::hexStr(keyc.getPubDER());
+  std::cout << "Pub hex:" << std::endl;
+  std::cout << content << std::endl;
+  if(empty == content) return 1;
+  
+  return 0;
+}
+
+int importBundlePEM(char* argv[], int argc)
+{
+  if(importPrivPEM(argv, argc)||importPubPEM(argv, argc)) return 1;
+  return 0;
+}
+
+int getPrivPEM(char* argv[], int argc)
+{
+  pkicxx::pkic key_synth;
+  key_synth.generate_keypair(2048);
+  std::string synth_pem = key_synth.getPrivPEM();
+  std::cout << "Synthesized Priv PEM:" << std::endl;
+  std::cout << synth_pem << std::endl;
+
+  pkicxx::pkic key_imported;
+  key_synth.generate_keypair(2048);
+  std::string imported_pem = key_imported.getPrivPEM();
+  std::cout << "Synthesized Priv PEM:" << std::endl;
+  std::cout << imported_pem << std::endl;
+
+  return 0;
+}
+
+int getPubPEM(char* argv[], int argc)
+{
+  pkicxx::pkic key_synth;
+  key_synth.generate_keypair(2048);
+  std::string synth_pem = key_synth.getPubPEM();
+  std::cout << "Synthesized Pub PEM:" << std::endl;
+  std::cout << synth_pem << std::endl;
+
+  pkicxx::pkic key_imported;
+  key_synth.importPEM(argv[2]);
+  std::string imported_pem = key_imported.getPubPEM();
+  std::cout << "Synthesized Pub PEM:" << std::endl;
+  std::cout << imported_pem << std::endl;
+
+  return 0;
+}
+
+int getBundlePEM(char* argv[], int argc)
+{
+  pkicxx::pkic key_synth;
+  key_synth.generate_keypair(2048);
+  std::string synth_pem = key_synth.getPrivPEM();
+  std::cout << "Synthesized Bundle PEM:" << std::endl;
+  std::cout << synth_pem << std::endl;
+
+  pkicxx::pkic key_imported;
+  key_synth.generate_keypair(2048);
+  std::string imported_pem = key_imported.getPrivPEM();
+  std::cout << "Synthesized Priv PEM:" << std::endl;
+  std::cout << imported_pem << std::endl;
+
+  return 0;
+}
+
+int exportPrivPEM(char* argv[], int argc)
+{
+  pkicxx::pkic keyc;
+  keyc.generate_keypair(2048);
+  keyc.exportPrivPEM("priv_out.pem");
+  
+  return 0;
+}
+
+int exportPubPEM(char* argv[], int argc)
+{
+  pkicxx::pkic keyc;
+  keyc.generate_keypair(2048);
+  keyc.exportPubPEM("pub_out.pem");
+  
+  return 0;
+}
+
+int exportBundlePEM(char* argv[], int argc)
+{
+  pkicxx::pkic keyc;
+  keyc.generate_keypair(2048);
+  keyc.exportBundlePEM("bundle_out.pem");
   
   return 0;
 }
@@ -123,15 +215,6 @@ int Decrypt_test(char* argv[], int argc)
   return 1;
 }
 
-int bundlePEM_test(char* argv[], int argc)
-{
-  pkicxx::pkic key_factory;
-  key_factory.generate_keypair(2048);
-  std::string bundle = key_factory.getBundlePEM();
-  std::cout << bundle << std::endl;
-  return 0;
-}
-
 int debugPass(char* argv[], int argc)
 {
   std::cout << "Arg pass: ";
@@ -146,15 +229,18 @@ int debugPass(char* argv[], int argc)
 
 std::map<std::string,std::function<int(char* argv[],int argc)>> handler =
 {
-  {"--factoryInit", &keyfactoryInit_test},
-  {"--pairGen", &keypairGen_test},
-  {"--pairRegen", &keypairRegen_test},
-  {"--pairMultigen", &keypairMultigen_test},
-  {"--privPEM", &privPEM_test},
-  {"--pubPEM", &pubPEM_test},
-  {"--bundlePEM", &bundlePEM_test},
-  {"--privDER", &privDER_test},
-  {"--pubDER", &pubDER_test},
+  {"--pkicInit", &pkicInit},
+  {"--pairGen", &keypairGen},
+  {"--pairRegen", &keypairRegen},
+  {"--pairMultigen", &keypairMultigen},
+  {"--getPrivDER", &getPrivDER},
+  {"--getPubDER", &getPubDER},
+  {"--importPrivPEM", &importPrivPEM},
+  {"--importPubPEM", &importPubPEM},
+  {"--importBundlePEM", &importBundlePEM},
+  {"--exportPrivPEM", &exportPrivPEM},
+  {"--exportPubPEM", &exportPubPEM},
+  {"--exportBundlePEM", &exportBundlePEM},
   {"--encrypt", &Encrypt_test},
   {"--decrypt", &Decrypt_test},
   {"--debugTest", &debugPass}
