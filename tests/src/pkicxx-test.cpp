@@ -3,7 +3,6 @@
 #include <functional>
 #include <iostream>
 #include <vector>
-#include "pkicxx-pkic.hpp"
 #include "pkicxx.hpp"
 
 int pkicInit(char* argv[], int argc)
