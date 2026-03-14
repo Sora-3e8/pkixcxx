@@ -1,10 +1,13 @@
+#include <cstddef>
 #include <ios>
+#include <openssl/bio.h>
 #include <openssl/rsa.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
 #include "pkicxx-pkic.hpp"
 #include <sstream>
 #include <fstream>
+
 
 namespace pkicxx
 {
@@ -52,16 +55,23 @@ namespace pkicxx
     
     return key_der;
   }
-
   void pkic::importPEM(const char* file)
   {
-    std::stringstream pem_str2;
+    std::stringstream pem_str;
     std::fstream pem_file(file,std::ios_base::in); 
-    pem_str2 << pem_file.rdbuf();
+    pem_str << pem_file.rdbuf();
     pem_file.close();
-    BIO* bio = BIO_new(BIO_s_mem());
-    PEM_read_bio_PrivateKey(bio,&key_container,NULL,&pem_str2);
-    PEM_read_bio_PUBKEY(bio,&key_container,NULL,&pem_str2);
+    const std::string str_tmp = pem_str.str();
+    const char* pem_str2 = str_tmp.c_str();
+    BIO* bio = BIO_new_mem_buf(pem_str2, pem_str.str().size());
+    ::evp_pkey_st* tmp_key = nullptr;
+    tmp_key = PEM_read_bio_PrivateKey(bio, NULL, NULL,NULL);
+    BIO_reset(bio);
+
+    if(tmp_key != nullptr) key_container=tmp_key;
+    if(tmp_key == nullptr) tmp_key = PEM_read_bio_PUBKEY(bio, NULL,NULL,NULL);
+    if(tmp_key != nullptr) key_container = tmp_key;
+
     BIO_free(bio);
   }
 
@@ -69,7 +79,7 @@ namespace pkicxx
   void pkic::loadPEMStr(const char* PEM)
   {
     BIO* bio = BIO_new(BIO_s_mem());
-    PEM_read_bio_PrivateKey(bio,&key_container,NULL,&PEM);
+    //PEM_read_bio_PrivateKey(bio,&key_container,NULL,&PEM);
     PEM_read_bio_PUBKEY(bio,&key_container,NULL,&PEM);
     BIO_free(bio);
   }
